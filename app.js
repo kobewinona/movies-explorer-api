@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 // noinspection JSCheckFunctionSignatures
 
 require('dotenv').config();
