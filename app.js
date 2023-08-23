@@ -9,10 +9,13 @@ const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 
 const { requestLogger, errorLogger } = require('./middlewares/logger');
+const indexRouter = require('./routes/index');
+const NotFoundError = require('./errors/not-found-err');
+const handleError = require('./middlewares/errorHandler');
 
 const {
   PORT = 3000,
-  MONGO_DB_URL = 'mongodb://localhost:27017/mestodb',
+  MONGO_DB_URL = 'mongodb://localhost:27017/movies',
 } = process.env;
 
 const app = express();
@@ -31,8 +34,16 @@ app.use(rateLimit({
   legacyHeaders: false,
 }));
 
+app.use('/', indexRouter);
+
 app.use(errorLogger);
 app.use(errors());
+
+app.all('*', (req, res, next) => {
+  next(new NotFoundError('Что-то пошло не так...'));
+});
+
+app.use(handleError);
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
