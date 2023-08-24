@@ -165,7 +165,7 @@ describe('Signing up', () => {
       const expectedUserData = { ...fixturedValidUser, password: undefined };
       expect(returnedUserData).toEqual(expectedUserData);
     });
-    it('should not return an object with password', async () => {
+    it('should return an object without password', async () => {
       const res = await request.post('/signup').send(fixturedValidUser);
       expect(res.body.password).toBeUndefined();
     });
