@@ -14,7 +14,6 @@ const NotFoundError = require('./errors/not-found-err');
 const handleError = require('./middlewares/errorHandler');
 
 const {
-  PORT = 3000,
   MONGO_DB_URL = 'mongodb://localhost:27017/movies',
 } = process.env;
 
@@ -45,7 +44,4 @@ app.all('*', (req, res, next) => {
 
 app.use(handleError);
 
-app.listen(PORT, () => {
-  // eslint-disable-next-line no-console
-  console.log(`Server is running at port ${PORT}`);
-});
+module.exports = app;
