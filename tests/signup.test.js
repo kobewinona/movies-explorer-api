@@ -28,145 +28,164 @@ afterAll(() => mongoose.disconnect());
 
 describe('Signing up', () => {
   describe('with incorrect email format', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.email);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedInvalidUser.email);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.email);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.email);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with a name shorter than 2 symbols', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.tooShortName);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedInvalidUser.tooShortName);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.tooShortName);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.tooShortName);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with a name longer than 30 symbols', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.tooLongName);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedInvalidUser.tooLongName);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.tooLongName);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedInvalidUser.tooLongName);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with no email provided', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoEmail);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedUserWithNoEmail);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoEmail);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoEmail);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with no name provided', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoName);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedUserWithNoName);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoName);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoName);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with no password provided', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoPassword);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedUserWithNoPassword);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoPassword);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedUserWithNoPassword);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with a non-unique email', () => {
+    let res;
+
     beforeAll(async () => {
       await User.create(fixturedValidUser);
+      res = await request.post('/signup').send(fixturedValidUser);
     });
 
     afterAll(async () => {
       await User.deleteOne({ email: fixturedValidUser.email });
     });
 
-    it('should return a status code 409', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return a status code 409', () => {
       expect(res.status).toBe(409);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with valid user data', () => {
-    afterEach(async () => {
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signup').send(fixturedValidUser);
+    });
+
+    afterAll(async () => {
       await User.deleteOne({ email: fixturedValidUser.email });
     });
 
-    it('should return a status code 200 or 201', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return a status code 200 or 201', () => {
       // noinspection JSUnresolvedVariable
       expect(res.status).toEqual(expect.any(Number, 200, 201));
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return user data with id in correct format', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return user data with id in correct format', () => {
       expect(res.body._id).toBeDefined();
       expect(res.body._id).toMatch(idRegex);
     });
-    it('should return user data identical to the provided data', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return user data identical to the provided data', () => {
       const returnedUserData = { ...res.body, __v: undefined, _id: undefined };
       const expectedUserData = { ...fixturedValidUser, password: undefined };
       expect(returnedUserData).toEqual(expectedUserData);
     });
-    it('should return an object without password', async () => {
-      const res = await request.post('/signup').send(fixturedValidUser);
+    it('should return an object without password', () => {
       expect(res.body.password).toBeUndefined();
     });
   });

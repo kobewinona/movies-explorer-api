@@ -28,11 +28,7 @@ router.post('/signin', celebrate({
   }),
 }, { abortEarly: false }), signin);
 
-router.post('/signout', celebrate({
-  cookies: Joi.object().keys({
-    token: Joi.string().required(),
-  }),
-}, { abortEarly: false }), signout);
+router.post('/signout', signout);
 
 // auth middleware
 

@@ -17,7 +17,6 @@ const {
   fixturedSigningInNonexistentUser,
   fixturedSigningInInvalidEmailUser,
 } = require('./fixtures/signinFixtures');
-const { fixturedValidUser } = require('./fixtures/signupFixtures');
 
 const request = supertest(app);
 
@@ -35,76 +34,90 @@ describe('Signin in', () => {
   });
 
   describe('with non-existent email', () => {
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signin').send(fixturedSigningInNonexistentUser);
+    });
+
     it('should return a status code 401', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInNonexistentUser);
       expect(res.status).toBe(401);
     });
     it('should return a JSON object', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInNonexistentUser);
       expect(res.body).toBeDefined();
     });
     it('should return an error message', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInNonexistentUser);
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with incorrect email format', () => {
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInInvalidEmailUser);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signin').send(fixturedSigningInInvalidEmailUser);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInInvalidEmailUser);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInInvalidEmailUser);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with no email provided', () => {
+    let res;
     const { email, ...userDataWithoutEmail } = fixturedSigningInValidUser;
 
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signin').send(userDataWithoutEmail);
+    beforeAll(async () => {
+      res = await request.post('/signin').send(userDataWithoutEmail);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signin').send(userDataWithoutEmail);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signin').send(userDataWithoutEmail);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with no password provided', () => {
+    let res;
     const { password, ...userDataWithoutPassword } = fixturedSigningInValidUser;
 
-    it('should return a status code 400', async () => {
-      const res = await request.post('/signin').send(userDataWithoutPassword);
+    beforeAll(async () => {
+      res = await request.post('/signin').send(userDataWithoutPassword);
+    });
+
+    it('should return a status code 400', () => {
       expect(res.status).toBe(400);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signin').send(userDataWithoutPassword);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
-    it('should return an error message', async () => {
-      const res = await request.post('/signin').send(userDataWithoutPassword);
+    it('should return an error message', () => {
       expect(res.body.message).toBeDefined();
     });
   });
 
   describe('with valid user data', () => {
-    it('should return a status code 200', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInValidUser);
+    let res;
+
+    beforeAll(async () => {
+      res = await request.post('/signin').send(fixturedSigningInValidUser);
+    });
+
+    it('should return a status code 200', () => {
       expect(res.status).toBe(200);
     });
-    it('should return a JSON object', async () => {
-      const res = await request.post('/signin').send(fixturedSigningInValidUser);
+    it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
     });
   });
