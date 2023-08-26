@@ -1,8 +1,10 @@
-/* eslint-disable no-undef */
-// noinspection JSUnresolvedFunction,JSCheckFunctionSignatures
+/* eslint-disable no-undef,import/no-extraneous-dependencies */
+// noinspection JSUnresolvedFunction,JSCheckFunctionSignatures,DuplicatedCode
 
 const supertest = require('supertest');
 const mongoose = require('mongoose');
+// noinspection NpmUsedModulesInstalled
+const cookie = require('cookie');
 
 const {
   MONGO_DB_URL = 'mongodb://localhost:27017/movies',
@@ -12,11 +14,10 @@ const app = require('../app');
 const User = require('../models/user');
 
 const {
-  fixturedSignedUpUser,
-  fixturedSigningInValidUser,
-  fixturedSigningInNonexistentUser,
-  fixturedSigningInInvalidEmailUser,
-} = require('./fixtures/signinFixtures');
+  fixturedInvalidUserData,
+  fixturedValidUserDataOne,
+  fixturedValidUserDataTwo,
+} = require('./fixtures/userFixtures');
 
 const request = supertest(app);
 
@@ -25,19 +26,20 @@ beforeAll(() => mongoose.connect(MONGO_DB_URL));
 afterAll(() => mongoose.disconnect());
 
 describe('Signin in', () => {
+  let res;
+
   beforeAll(async () => {
-    await request.post('/signup').send(fixturedSignedUpUser);
+    await request.post('/signup').send(fixturedValidUserDataOne);
   });
 
   afterAll(async () => {
-    await User.deleteOne({ email: fixturedSignedUpUser.email });
+    await User.deleteOne({ email: fixturedValidUserDataOne.email });
   });
 
   describe('with non-existent email', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signin').send(fixturedSigningInNonexistentUser);
+      const { name, ...nonExistentUserData } = fixturedValidUserDataTwo;
+      res = await request.post('/signin').send(nonExistentUserData);
     });
 
     it('should return a status code 401', async () => {
@@ -52,10 +54,8 @@ describe('Signin in', () => {
   });
 
   describe('with incorrect email format', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signin').send(fixturedSigningInInvalidEmailUser);
+      res = await request.post('/signin').send(fixturedInvalidUserData.email);
     });
 
     it('should return a status code 400', () => {
@@ -70,11 +70,9 @@ describe('Signin in', () => {
   });
 
   describe('with no email provided', () => {
-    let res;
-    const { email, ...userDataWithoutEmail } = fixturedSigningInValidUser;
-
     beforeAll(async () => {
-      res = await request.post('/signin').send(userDataWithoutEmail);
+      const { email, ...userDataWithNoEmail } = fixturedValidUserDataOne;
+      res = await request.post('/signin').send(userDataWithNoEmail);
     });
 
     it('should return a status code 400', () => {
@@ -89,11 +87,9 @@ describe('Signin in', () => {
   });
 
   describe('with no password provided', () => {
-    let res;
-    const { password, ...userDataWithoutPassword } = fixturedSigningInValidUser;
-
     beforeAll(async () => {
-      res = await request.post('/signin').send(userDataWithoutPassword);
+      const { password, ...userDataWithNoPassword } = fixturedValidUserDataOne;
+      res = await request.post('/signin').send(userDataWithNoPassword);
     });
 
     it('should return a status code 400', () => {
@@ -108,10 +104,17 @@ describe('Signin in', () => {
   });
 
   describe('with valid user data', () => {
-    let res;
+    let tokenCookie;
 
     beforeAll(async () => {
-      res = await request.post('/signin').send(fixturedSigningInValidUser);
+      const { name, ...userValidData } = fixturedValidUserDataOne;
+      res = await request.post('/signin').send(userValidData);
+      const rawCookies = cookie.parse(res.headers['set-cookie'][0]);
+      tokenCookie = cookie.serialize('token', rawCookies.token);
+    });
+
+    afterAll(async () => {
+      await request.post('/signout').set('Cookie', tokenCookie);
     });
 
     it('should return a status code 200', () => {
@@ -119,6 +122,9 @@ describe('Signin in', () => {
     });
     it('should return a JSON object', () => {
       expect(res.body).toBeDefined();
+    });
+    it('should return an object without password', () => {
+      expect(res.body.password).toBeUndefined();
     });
   });
 });

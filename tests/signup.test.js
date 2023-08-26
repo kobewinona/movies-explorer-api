@@ -13,12 +13,9 @@ const User = require('../models/user');
 const { idRegex } = require('../utils/regex');
 
 const {
-  fixturedInvalidUser,
-  fixturedUserWithNoEmail,
-  fixturedUserWithNoName,
-  fixturedUserWithNoPassword,
-  fixturedValidUser,
-} = require('./fixtures/signupFixtures');
+  fixturedInvalidUserData,
+  fixturedValidUserDataOne,
+} = require('./fixtures/userFixtures');
 
 const request = supertest(app);
 
@@ -27,11 +24,11 @@ beforeAll(() => mongoose.connect(MONGO_DB_URL));
 afterAll(() => mongoose.disconnect());
 
 describe('Signing up', () => {
-  describe('with incorrect email format', () => {
-    let res;
+  let res;
 
+  describe('with incorrect email format', () => {
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedInvalidUser.email);
+      res = await request.post('/signup').send(fixturedInvalidUserData.email);
     });
 
     it('should return a status code 400', () => {
@@ -46,10 +43,8 @@ describe('Signing up', () => {
   });
 
   describe('with a name shorter than 2 symbols', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedInvalidUser.tooShortName);
+      res = await request.post('/signup').send(fixturedInvalidUserData.tooShortName);
     });
 
     it('should return a status code 400', () => {
@@ -64,10 +59,8 @@ describe('Signing up', () => {
   });
 
   describe('with a name longer than 30 symbols', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedInvalidUser.tooLongName);
+      res = await request.post('/signup').send(fixturedInvalidUserData.tooLongName);
     });
 
     it('should return a status code 400', () => {
@@ -82,10 +75,9 @@ describe('Signing up', () => {
   });
 
   describe('with no email provided', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedUserWithNoEmail);
+      const { email, ...userDataWithNoEmail } = fixturedValidUserDataOne;
+      res = await request.post('/signup').send(userDataWithNoEmail);
     });
 
     it('should return a status code 400', () => {
@@ -100,10 +92,9 @@ describe('Signing up', () => {
   });
 
   describe('with no name provided', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedUserWithNoName);
+      const { name, ...userDataWithNoName } = fixturedValidUserDataOne;
+      res = await request.post('/signup').send(userDataWithNoName);
     });
 
     it('should return a status code 400', () => {
@@ -118,10 +109,9 @@ describe('Signing up', () => {
   });
 
   describe('with no password provided', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedUserWithNoPassword);
+      const { password, ...userDataWithNoPassword } = fixturedValidUserDataOne;
+      res = await request.post('/signup').send(userDataWithNoPassword);
     });
 
     it('should return a status code 400', () => {
@@ -136,15 +126,13 @@ describe('Signing up', () => {
   });
 
   describe('with a non-unique email', () => {
-    let res;
-
     beforeAll(async () => {
-      await User.create(fixturedValidUser);
-      res = await request.post('/signup').send(fixturedValidUser);
+      await User.create(fixturedValidUserDataOne);
+      res = await request.post('/signup').send(fixturedValidUserDataOne);
     });
 
     afterAll(async () => {
-      await User.deleteOne({ email: fixturedValidUser.email });
+      await User.deleteOne({ email: fixturedValidUserDataOne.email });
     });
 
     it('should return a status code 409', () => {
@@ -159,14 +147,12 @@ describe('Signing up', () => {
   });
 
   describe('with valid user data', () => {
-    let res;
-
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedValidUser);
+      res = await request.post('/signup').send(fixturedValidUserDataOne);
     });
 
     afterAll(async () => {
-      await User.deleteOne({ email: fixturedValidUser.email });
+      await User.deleteOne({ email: fixturedValidUserDataOne.email });
     });
 
     it('should return a status code 200 or 201', () => {
@@ -182,7 +168,7 @@ describe('Signing up', () => {
     });
     it('should return user data identical to the provided data', () => {
       const returnedUserData = { ...res.body, __v: undefined, _id: undefined };
-      const expectedUserData = { ...fixturedValidUser, password: undefined };
+      const expectedUserData = { ...fixturedValidUserDataOne, password: undefined };
       expect(returnedUserData).toEqual(expectedUserData);
     });
     it('should return an object without password', () => {
