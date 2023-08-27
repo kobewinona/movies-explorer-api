@@ -28,7 +28,11 @@ describe('Signing up', () => {
 
   describe('with incorrect email format', () => {
     beforeAll(async () => {
-      res = await request.post('/signup').send(fixturedInvalidUserData.email);
+      const userDataWithInvalidEmail = {
+        ...fixturedValidUserDataOne,
+        email: fixturedInvalidUserData.email,
+      };
+      res = await request.post('/signup').send(userDataWithInvalidEmail);
     });
 
     it('should return a status code 400', () => {

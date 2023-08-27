@@ -7,7 +7,7 @@ const signup = require('../controllers/signup');
 const signin = require('../controllers/signin');
 const signout = require('../controllers/signout');
 const auth = require('../middlewares/auth');
-const { urlRegex, idRegex } = require('../utils/regex');
+const { urlRegex } = require('../utils/regex');
 const { getCurrentUser, updateCurrentUser } = require('../controllers/users');
 const { getMovies, addMovie, deleteMovie } = require('../controllers/movies');
 
@@ -71,10 +71,12 @@ router.post('/movies', celebrate({
   }),
 }, { abortEarly: false }), addMovie);
 
-router.delete('/movies/:id', celebrate({
-  params: Joi.object().keys({
-    id: Joi.string().pattern(idRegex).required(),
-  }),
-}), deleteMovie);
+// router.delete('/movies/:id', celebrate({
+//   params: Joi.object().keys({
+//     id: Joi.string().pattern(idRegex).required(),
+//   }),
+// }), deleteMovie);
+
+router.delete('/movies/:id', deleteMovie);
 
 module.exports = router;
