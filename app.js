@@ -8,6 +8,7 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const { errors } = require('celebrate');
 
+const handleCors = require('./middlewares/corsHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const indexRouter = require('./routes/index');
 const NotFoundError = require('./errors/not-found-err');
@@ -18,6 +19,8 @@ const {
 } = process.env;
 
 const app = express();
+
+app.use(handleCors);
 
 // noinspection JSUnresolvedFunction
 mongoose.connect(MONGO_DB_URL);
