@@ -1,6 +1,7 @@
 /* eslint-disable no-undef,import/no-extraneous-dependencies */
 // noinspection JSUnresolvedFunction,JSCheckFunctionSignatures
 
+require('dotenv').config();
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 // noinspection NpmUsedModulesInstalled
