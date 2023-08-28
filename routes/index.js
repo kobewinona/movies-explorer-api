@@ -34,8 +34,6 @@ router.post('/signout', celebrate({
   }),
 }, { abortEarly: false }), signout);
 
-// router.post('/signout', signout);
-
 // auth middleware
 
 router.use(auth);

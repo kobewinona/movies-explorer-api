@@ -1,1 +1,1 @@
-# movies-explorer-api
+http://api.movies.dk.nomoredomainsicu.ru/

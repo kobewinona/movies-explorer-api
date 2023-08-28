@@ -15,10 +15,12 @@ const NotFoundError = require('./errors/not-found-err');
 const handleError = require('./middlewares/errorHandler');
 
 const {
-  MONGO_DB_URL = 'mongodb://localhost:27017/movies',
+  MONGO_DB_URL = 'mongodb://localhost:27017/bitfilmsdb',
 } = process.env;
 
 const app = express();
+
+app.set('trust proxy', 1);
 
 app.use(handleCors);
 

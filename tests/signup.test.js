@@ -6,7 +6,7 @@ const supertest = require('supertest');
 const mongoose = require('mongoose');
 
 const {
-  MONGO_DB_URL = 'mongodb://localhost:27017/movies',
+  MONGO_DB_URL = 'mongodb://localhost:27017/bitfilmsdb',
 } = process.env;
 
 const app = require('../app');
