@@ -1,27 +1,10 @@
-const mongoose = require('mongoose');
-const {
-  BAD_REQUEST, INTERNAL_SERVER_ERROR, MSSG_INTERNAL_SERVER_ERROR,
-} = require('../utils/constants');
+const { MSSG_INTERNAL_SERVER_ERROR } = require('../utils/constants');
 
 module.exports = (err, req, res, next) => {
-  // noinspection JSUnresolvedVariable
-  if (err instanceof mongoose.Error.ValidationError) {
-    const errorMessages = Object.values(err.errors).map((error) => {
-      const { path, message } = error;
-      return `Ошибка в поле ${path}: ${message}.`;
-    });
+  const status = err.status || 500;
 
-    res.status(BAD_REQUEST).send({ message: errorMessages.join(' ') });
-    next();
-  }
+  const message = status === 500 ? MSSG_INTERNAL_SERVER_ERROR : err.message;
 
-  if (!err.status) {
-    res.status(INTERNAL_SERVER_ERROR).send({
-      message: MSSG_INTERNAL_SERVER_ERROR,
-    });
-    next();
-  }
-
-  res.status(err.status).send({ message: err.message });
+  res.status(status).send({ message });
   next();
 };
