@@ -1,17 +1,11 @@
-/* eslint-disable no-undef,import/no-extraneous-dependencies */
 // noinspection JSUnresolvedFunction,JSCheckFunctionSignatures,DuplicatedCode
 
-require('dotenv').config();
 const supertest = require('supertest');
 const mongoose = require('mongoose');
-// noinspection NpmUsedModulesInstalled
 const cookie = require('cookie');
 
-const {
-  MONGO_DB_URL = 'mongodb://localhost:27017/bitfilmsdb',
-} = process.env;
-
 const app = require('../app');
+const { DB_HOST } = require('../utils/appConfig');
 const User = require('../models/user');
 const Movie = require('../models/movie');
 
@@ -25,7 +19,7 @@ const {
 
 const request = supertest(app);
 
-beforeAll(() => mongoose.connect(MONGO_DB_URL));
+beforeAll(() => mongoose.connect(DB_HOST));
 
 afterAll(() => mongoose.disconnect());
 

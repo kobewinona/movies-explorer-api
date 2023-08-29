@@ -1,10 +1,7 @@
 // noinspection JSUnresolvedFunction
 
-require('dotenv').config();
-
 const app = require('./app');
-
-const { PORT = 3000 } = process.env;
+const { PORT } = require('./utils/appConfig');
 
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console

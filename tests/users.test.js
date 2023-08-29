@@ -1,17 +1,11 @@
-/* eslint-disable no-undef,import/no-extraneous-dependencies */
 // noinspection JSUnresolvedFunction,JSCheckFunctionSignatures,DuplicatedCode
 
-require('dotenv').config();
 const supertest = require('supertest');
 const mongoose = require('mongoose');
-// noinspection NpmUsedModulesInstalled
 const cookie = require('cookie');
 
-const {
-  MONGO_DB_URL = 'mongodb://localhost:27017/bitfilmsdb',
-} = process.env;
-
 const app = require('../app');
+const { DB_HOST } = require('../utils/appConfig');
 const User = require('../models/user');
 
 const {
@@ -22,7 +16,7 @@ const {
 
 const request = supertest(app);
 
-beforeAll(() => mongoose.connect(MONGO_DB_URL));
+beforeAll(() => mongoose.connect(DB_HOST));
 
 afterAll(() => mongoose.disconnect());
 
@@ -97,6 +91,27 @@ describe('users endpoint /', () => {
 
       it('should return a status code 400', () => {
         expect(res.status).toBe(400);
+      });
+      it('should return a JSON object', () => {
+        expect(res.body).toBeDefined();
+      });
+      it('should return an error message', () => {
+        expect(res.body.message).toBeDefined();
+      });
+    });
+
+    describe('with a non-unique email', () => {
+      beforeAll(async () => {
+        await request.post('/signup').send(fixturedValidUserDataTwo);
+        res = await request.patch('/users/me').send({ email: fixturedValidUserDataTwo.email }).set('Cookie', tokenCookie);
+      });
+
+      afterAll(async () => {
+        await User.deleteOne({ email: fixturedValidUserDataTwo.email });
+      });
+
+      it('should return a status code 409', () => {
+        expect(res.status).toBe(409);
       });
       it('should return a JSON object', () => {
         expect(res.body).toBeDefined();

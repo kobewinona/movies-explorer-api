@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
-const { BAD_REQUEST, INTERNAL_SERVER_ERROR } = require('../utils/statusCodes');
+const {
+  BAD_REQUEST, INTERNAL_SERVER_ERROR, MSSG_INTERNAL_SERVER_ERROR,
+} = require('../utils/constants');
 
-// eslint-disable-next-line no-unused-vars
 module.exports = (err, req, res, next) => {
   // noinspection JSUnresolvedVariable
   if (err instanceof mongoose.Error.ValidationError) {
@@ -10,14 +11,17 @@ module.exports = (err, req, res, next) => {
       return `Ошибка в поле ${path}: ${message}.`;
     });
 
-    return res.status(BAD_REQUEST).send({ message: errorMessages.join(' ') });
+    res.status(BAD_REQUEST).send({ message: errorMessages.join(' ') });
+    next();
   }
 
   if (!err.status) {
-    return res.status(INTERNAL_SERVER_ERROR).send({
-      message: 'На сервере произошла ошибка',
+    res.status(INTERNAL_SERVER_ERROR).send({
+      message: MSSG_INTERNAL_SERVER_ERROR,
     });
+    next();
   }
 
-  return res.status(err.status).send({ message: err.message });
+  res.status(err.status).send({ message: err.message });
+  next();
 };

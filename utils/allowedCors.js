@@ -1,8 +1,5 @@
 // noinspection HttpUrlsUsage
 
-const allowedCors = [
-  'http://klimkin-mesto.nomoreparties.co',
-  'https://klimkin-mesto.nomoreparties.co',
-];
+const allowedCors = [];
 
 module.exports = allowedCors;

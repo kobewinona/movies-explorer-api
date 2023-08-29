@@ -4,51 +4,59 @@ const bcrypt = require('bcryptjs');
 
 const { nameRegex } = require('../utils/regex');
 const UnauthorizedError = require('../errors/unauthorized-err');
+const {
+  MSSG_UNAUTHORIZED_CREDENTIALS,
+  MSSG_REQUIRED,
+  MSSG_UNIQUE_EMAIL,
+  MSSG_VALIDATE_EMAIL,
+  MSSG_MINLENGTH_2,
+  MSSG_MAXLENGTH_30,
+  MSSG_VALIDATE_NAME,
+} = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
-    unique: [true, 'Данный Email адрес уже используется'],
+    required: [true, MSSG_REQUIRED],
+    unique: [true, MSSG_UNIQUE_EMAIL],
     validate: {
       validator(value) {
         // noinspection JSUnresolvedFunction
         return validator.isEmail(value);
       },
-      message: 'Поле должно содержать Email адрес',
+      message: MSSG_VALIDATE_EMAIL,
     },
   },
   password: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
+    required: [true, MSSG_REQUIRED],
     select: false,
   },
   name: {
     type: String,
-    required: [true, 'Поле должно быть заполнено'],
-    minlength: [2, 'Поле должно содержать более 2 символов'],
-    maxlength: [30, 'Поле должно содержать не более 30 символов'],
+    required: [true, MSSG_REQUIRED],
+    minlength: [2, MSSG_MINLENGTH_2],
+    maxlength: [30, MSSG_MAXLENGTH_30],
     validate: {
       validator(value) {
         // noinspection JSUnresolvedFunction
         return nameRegex.test(value);
       },
-      message: 'Поле должно содержать имя',
+      message: MSSG_VALIDATE_NAME,
     },
   },
 });
 
-// eslint-disable-next-line func-names
-userSchema.statics.findUserByCredentials = function ({ email, password }) {
+userSchema.statics.findUserByCredentials = function handleSearch({ email, password }) {
   return this.findOne({ email }).select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+        return Promise.reject(new UnauthorizedError(MSSG_UNAUTHORIZED_CREDENTIALS));
       }
       return bcrypt.compare(password, user.password)
         .then((matched) => {
           if (!matched) {
-            return Promise.reject(new UnauthorizedError('Неправильные почта или пароль'));
+            return Promise.reject(new UnauthorizedError(MSSG_UNAUTHORIZED_CREDENTIALS));
           }
           return user;
         });

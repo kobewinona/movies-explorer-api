@@ -1,15 +1,10 @@
-/* eslint-disable no-undef */
 // noinspection JSUnresolvedFunction,JSCheckFunctionSignatures
 
-require('dotenv').config();
 const supertest = require('supertest');
 const mongoose = require('mongoose');
 
-const {
-  MONGO_DB_URL = 'mongodb://localhost:27017/bitfilmsdb',
-} = process.env;
-
 const app = require('../app');
+const { DB_HOST } = require('../utils/appConfig');
 const User = require('../models/user');
 const { idRegex } = require('../utils/regex');
 
@@ -20,12 +15,16 @@ const {
 
 const request = supertest(app);
 
-beforeAll(() => mongoose.connect(MONGO_DB_URL));
+beforeAll(() => mongoose.connect(DB_HOST));
 
 afterAll(() => mongoose.disconnect());
 
 describe('Signing up', () => {
   let res;
+
+  afterEach(async () => {
+    await User.deleteOne({ email: fixturedValidUserDataOne.email });
+  });
 
   describe('with incorrect email format', () => {
     beforeAll(async () => {
@@ -136,10 +135,6 @@ describe('Signing up', () => {
       res = await request.post('/signup').send(fixturedValidUserDataOne);
     });
 
-    afterAll(async () => {
-      await User.deleteOne({ email: fixturedValidUserDataOne.email });
-    });
-
     it('should return a status code 409', () => {
       expect(res.status).toBe(409);
     });
@@ -154,10 +149,6 @@ describe('Signing up', () => {
   describe('with valid user data', () => {
     beforeAll(async () => {
       res = await request.post('/signup').send(fixturedValidUserDataOne);
-    });
-
-    afterAll(async () => {
-      await User.deleteOne({ email: fixturedValidUserDataOne.email });
     });
 
     it('should return a status code 200 or 201', () => {
