@@ -31,12 +31,12 @@ app.use(helmet());
 app.use(limiter);
 
 app.use('/', indexRouter);
-
-app.use(errors());
 app.all('*', (req, res, next) => {
   next(new NotFoundError(MSSG_NOT_FOUND_SERVER));
 });
+
 app.use(errorLogger);
+app.use(errors());
 app.use(handleError);
 
 module.exports = app;
