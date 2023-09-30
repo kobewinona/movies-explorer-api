@@ -60,6 +60,13 @@ module.exports.signIn = (req, res, next) => {
 };
 
 module.exports.signOut = (req, res) => {
-  res.cookie('token', '', { expires: new Date(0), httpOnly: true, sameSite: true });
+  res.cookie('token', '', {
+    expires: new Date(0),
+    httpOnly: true,
+    secure: true,
+    sameSite: 'Lax',
+    path: '/',
+    domain: '.nomoredomainsicu.ru',
+  });
   res.status(OK).send({ message: MSSG_SUCCESS_SIGNOUT });
 };

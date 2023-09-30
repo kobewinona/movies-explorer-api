@@ -1,5 +1,5 @@
 const allowedCors = [
-  'https://movies.dk.nomoredomainsrocks.ru',
+  'http://localhost:3001',
 ];
 
 module.exports = allowedCors;
