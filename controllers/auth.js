@@ -48,7 +48,7 @@ module.exports.signIn = (req, res, next) => {
         maxAge,
         httpOnly: true,
         secure: true,
-        sameSite: 'Lax',
+        sameSite: 'None',
         domain: '.nomoredomainsicu.ru',
       });
 
@@ -64,7 +64,7 @@ module.exports.signOut = (req, res) => {
     expires: new Date(0),
     httpOnly: true,
     secure: true,
-    sameSite: 'Lax',
+    sameSite: 'None',
     path: '/',
     domain: '.nomoredomainsicu.ru',
   });
