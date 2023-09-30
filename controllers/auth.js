@@ -44,7 +44,13 @@ module.exports.signIn = (req, res, next) => {
       const oneDayMilliseconds = 24 * 60 * 60 * 1000;
       const maxAge = 7 * oneDayMilliseconds;
 
-      res.cookie('token', token, { maxAge, httpOnly: true, sameSite: true });
+      res.cookie('token', token, {
+        maxAge,
+        httpOnly: true,
+        secure: true,
+        sameSite: 'Lax',
+        domain: '.nomoredomainsicu.ru',
+      });
 
       const { password, ...userWithoutPassword } = user.toObject();
 
