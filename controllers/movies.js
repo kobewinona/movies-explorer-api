@@ -6,13 +6,13 @@ const BadRequestError = require('../errors/bad-request-err');
 const ForbiddenError = require('../errors/forbidden-err');
 const NotFoundError = require('../errors/not-found-err');
 
-const getMovies = (req, res, next) => {
+module.exports.getMovies = (req, res, next) => {
   Movie.find({ owner: req.user._id })
     .then((movies) => res.status(OK).send(movies))
     .catch(next);
 };
 
-const addMovie = (req, res, next) => {
+module.exports.saveMovie = (req, res, next) => {
   const movieInfo = req.body;
   const owner = req.user._id;
 
@@ -27,7 +27,7 @@ const addMovie = (req, res, next) => {
     });
 };
 
-const deleteMovie = (req, res, next) => {
+module.exports.deleteMovie = (req, res, next) => {
   Movie.findById(req.params.id)
     .orFail(new NotFoundError(MSSG_NOT_FOUND_MOVIE))
     .then((movie) => {
@@ -42,5 +42,3 @@ const deleteMovie = (req, res, next) => {
     })
     .catch(next);
 };
-
-module.exports = { getMovies, addMovie, deleteMovie };

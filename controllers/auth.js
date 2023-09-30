@@ -12,7 +12,7 @@ const { SECRET } = require('../utils/appConfig');
 
 const SALT_ROUNDS = 10;
 
-const signUp = (req, res, next) => {
+module.exports.signUp = (req, res, next) => {
   bcrypt.hash(req.body.password, SALT_ROUNDS)
     .then((hash) => {
       User.create({ ...req.body, password: hash })
@@ -31,7 +31,7 @@ const signUp = (req, res, next) => {
     .catch(next);
 };
 
-const signIn = (req, res, next) => {
+module.exports.signIn = (req, res, next) => {
   // noinspection JSUnresolvedFunction
   User.findUserByCredentials(req.body)
     .then((user) => {
@@ -53,9 +53,7 @@ const signIn = (req, res, next) => {
     .catch(next);
 };
 
-const signOut = (req, res) => {
+module.exports.signOut = (req, res) => {
   res.cookie('token', '', { expires: new Date(0), httpOnly: true, sameSite: true });
   res.status(OK).send({ message: MSSG_SUCCESS_SIGNOUT });
 };
-
-module.exports = { signUp, signIn, signOut };
