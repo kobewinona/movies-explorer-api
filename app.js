@@ -6,7 +6,8 @@ const cookieParser = require('cookie-parser');
 const helmet = require('helmet');
 const { errors } = require('celebrate');
 
-const handleCors = require('./middlewares/corsHandler');
+const cors = require('cors');
+const { corsOptions } = require('./utils/corsOptions');
 const { DB_HOST } = require('./utils/appConfig');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 const limiter = require('./middlewares/limiter');
@@ -19,7 +20,7 @@ const app = express();
 
 app.set('trust proxy', 1);
 
-app.use(handleCors);
+app.use(cors(corsOptions));
 
 // noinspection JSUnresolvedFunction
 mongoose.connect(DB_HOST);
