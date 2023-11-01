@@ -1,7 +1,17 @@
 [![cover](/images/movies-explorer-readme.jpg)](https://movies.dk.nomoredomainsrocks.ru)
 
 # Movies-Explorer
-[![React](https://img.shields.io/npm/v/react?style=flat-square)](https://www.npmjs.com/package/react)
+![Project Status](https://img.shields.io/badge/status-complete-lightgreen?style=flat-square)
+
+[![bcryptjs](https://img.shields.io/npm/v/bcryptjs?style=flat-square&label=bcryptjs)](https://www.npmjs.com/package/bcryptjs)
+[![cookie](https://img.shields.io/npm/v/cookie?style=flat-square&label=cookie)](https://www.npmjs.com/package/cookie)
+[![cookie-parser](https://img.shields.io/npm/v/cookie-parser?style=flat-square&label=cookie-parser)](https://www.npmjs.com/package/cookie-parser)
+[![cors](https://img.shields.io/npm/v/cors?style=flat-square&label=cors)](https://www.npmjs.com/package/cors)
+[![dotenv](https://img.shields.io/npm/v/dotenv?style=flat-square&label=dotenv)](https://www.npmjs.com/package/dotenv)
+[![express](https://img.shields.io/npm/v/express?style=flat-square&label=express)](https://www.npmjs.com/package/express)
+[![express-winston](https://img.shields.io/npm/v/express-winston?style=flat-square&label=express-winston)](https://www.npmjs.com/package/express-winston)
+[![jsonwebtoken](https://img.shields.io/npm/v/jsonwebtoken?style=flat-square&label=jsonwebtoken)](https://www.npmjs.com/package/jsonwebtoken)
+[![mongoose](https://img.shields.io/npm/v/mongoose?style=flat-square&label=mongoose)](https://www.npmjs.com/package/mongoose)
 
 [![Dima Klimkin Profile Page](https://img.shields.io/badge/Dima_Klimkin-f9f9f9?style=for-the-badge&logoColor=000&logo=github)](https://github.com/kobewinona)
 
