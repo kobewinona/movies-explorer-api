@@ -65,7 +65,6 @@ module.exports.signOut = (req, res) => {
     httpOnly: true,
     secure: true,
     sameSite: 'None',
-    path: '/',
     domain: '.nomoredomainsicu.ru',
   });
   res.status(OK).send({ message: MSSG_SUCCESS_SIGNOUT });
